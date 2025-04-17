@@ -1,0 +1,15 @@
+# Java
+target/
+*.class
+*.jar
+
+# IDE
+.idea/
+*.iml
+
+# Docker
+docker/volumes/
+
+# Ant build outputs
+router-service/build/
+out/

@@ -1,0 +1,14 @@
+{
+  "topics": [
+    {
+      "name": "fallback-logs",
+      "partitions": 3,
+      "replicationFactor": 1
+    },
+    {
+      "name": "fallback-errors",
+      "partitions": 2,
+      "replicationFactor": 1
+    }
+  ]
+}
