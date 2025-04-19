@@ -43,4 +43,13 @@
             </classpath>
         </java>
     </target>
+    <target name="run-receiver" depends="compile">
+        <java classname="com.failover.router.receiver.LogReceiver" fork="true">
+            <classpath>
+                <pathelement path="${build.dir}"/>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
 </project>
