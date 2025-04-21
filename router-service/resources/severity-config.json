@@ -1,0 +1,13 @@
+{
+  "walletService": {
+    "/api/wallet/balance": {
+      "success": "MODERATE",
+      "error": "HIGH"
+    }
+  },
+  "loginService": {
+    "/api/login": {
+      "error": "HIGH"
+    }
+  }
+}
