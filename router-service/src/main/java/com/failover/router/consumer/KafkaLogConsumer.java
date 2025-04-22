@@ -5,6 +5,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.failover.router.model.AppLog;
+import com.failover.router.redis.RedisLogWriter;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -15,6 +18,8 @@ public class KafkaLogConsumer {
     private static final String BOOTSTRAP_SERVERS = "localhost:9092";
     private static final String TOPIC = "DATA_FETCH_LOG_SUCCESS"; // change if needed
     private static final String GROUP_ID = "MODERATE_GROUP";
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static void main(String[] args) {
         Properties props = new Properties();
@@ -32,6 +37,16 @@ public class KafkaLogConsumer {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
                 for (ConsumerRecord<String, String> record : records) {
                     System.out.println("Received message: " + record.value());
+                    try {
+                        // Deserialize the JSON string to AppLog
+                        AppLog appLog = objectMapper.readValue(record.value(), AppLog.class);
+
+                        // Write to Redis using our custom writer
+                        RedisLogWriter.writeToRedis(appLog);
+
+                    } catch (Exception e) {
+                        System.err.println("❌ Failed to parse or write log: " + e.getMessage());
+                    }
                 }
             }
         } catch (Exception e) {
