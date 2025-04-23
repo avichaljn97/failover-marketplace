@@ -7,13 +7,14 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
+import static com.failover.router.config.AppConfig.*;
 
 import java.util.Properties;
 import java.util.concurrent.Future;
 
 public class KafkaLogDispatcher {
 
-    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
+    private static final String BOOTSTRAP_SERVERS = KAFKA_BOOTSTRAP_SERVERS;
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final KafkaProducer<String, String> producer;
 

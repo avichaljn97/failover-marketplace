@@ -8,6 +8,9 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.failover.router.model.AppLog;
 import com.failover.router.redis.RedisLogWriter;
+import com.failover.router.mysql.MySQLLogWriter;
+import static com.failover.router.config.AppConfig.*;
+
 
 import java.time.Duration;
 import java.util.Collections;
@@ -15,9 +18,9 @@ import java.util.Properties;
 
 public class KafkaLogConsumer {
 
-    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
-    private static final String TOPIC = "DATA_FETCH_LOG_SUCCESS"; // change if needed
-    private static final String GROUP_ID = "MODERATE_GROUP";
+    private static final String BOOTSTRAP_SERVERS = KAFKA_BOOTSTRAP_SERVERS;
+    private static final String TOPIC = DEFAULT_KAFKA_TOPIC; // change if needed
+    private static final String GROUP_ID = DEFAULT_KAFKA_GROUP;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -43,6 +46,7 @@ public class KafkaLogConsumer {
 
                         // Write to Redis using our custom writer
                         RedisLogWriter.writeToRedis(appLog);
+                        MySQLLogWriter.writeToMySQL(appLog);
 
                     } catch (Exception e) {
                         System.err.println("❌ Failed to parse or write log: " + e.getMessage());

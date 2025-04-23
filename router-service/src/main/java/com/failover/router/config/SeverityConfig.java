@@ -6,10 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import static com.failover.router.config.AppConfig.*;
 
 public class SeverityConfig {
 
-    private static final String CONFIG_FILE = "resources/severity-config.json";
+    private static final String CONFIG_FILE = KAFKA_TOPIC;
     private static final Map<String, String> severityMap = new HashMap<>();
 
     static {

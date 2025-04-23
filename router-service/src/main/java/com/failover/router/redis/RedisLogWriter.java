@@ -3,11 +3,11 @@ package com.failover.router.redis;
 import com.failover.router.model.AppLog;
 import redis.clients.jedis.Jedis;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.failover.router.config.AppConfig.*;
+
 
 public class RedisLogWriter {
 
-    private static final String REDIS_HOST = "localhost";
-    private static final int REDIS_PORT = 6379;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static void writeToRedis(AppLog log) {

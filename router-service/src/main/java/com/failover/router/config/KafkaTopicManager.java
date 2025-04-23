@@ -7,11 +7,13 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import static com.failover.router.config.AppConfig.*;
+
 
 public class KafkaTopicManager {
 
-    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
-    private static final String TOPIC_CONFIG_FILE = "resources/kafka-topics.json";
+    private static final String BOOTSTRAP_SERVERS = KAFKA_BOOTSTRAP_SERVERS;
+    private static final String TOPIC_CONFIG_FILE = KAFKA_TOPIC;
 
     public void createTopicsFromConfig() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
