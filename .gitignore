@@ -12,4 +12,6 @@ docker/volumes/
 
 # Ant build outputs
 router-service/build/
+router-service/logs/
 out/
+logs/

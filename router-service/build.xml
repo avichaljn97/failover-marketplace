@@ -16,8 +16,16 @@
 
     <target name="compile" depends="clean">
         <mkdir dir="${build.dir}"/>
+
+        <!-- Compile Java code -->
         <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" classpathref="classpath"/>
+
+        <!-- Copy resource files like logback.xml -->
+        <copy todir="${build.dir}">
+            <fileset dir="src/main/resources"/>
+        </copy>
     </target>
+
 
     <target name="run" depends="compile">
         <java classname="com.failover.router.Main" fork="true">

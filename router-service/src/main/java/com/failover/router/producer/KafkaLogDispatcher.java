@@ -1,6 +1,7 @@
 package com.failover.router.producer;
 
 import com.failover.router.model.AppLog;
+import com.failover.router.util.LoggerUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -39,6 +40,6 @@ public class KafkaLogDispatcher {
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, log.getUserId(), logJson);
         Future<RecordMetadata> future = producer.send(record);
         future.get(); // block until acknowledged
-        System.out.println("✅ Sent log to topic: " + topic);
+        LoggerUtil.logInfo("✅ Sent log to topic: " + topic);
     }
 }

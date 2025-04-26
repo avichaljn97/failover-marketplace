@@ -3,6 +3,7 @@ package com.failover.router.receiver;
 import com.failover.router.model.AppLog;
 import com.failover.router.producer.KafkaLogDispatcher;
 import com.failover.router.config.SeverityConfig;
+import com.failover.router.util.LoggerUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -23,7 +24,7 @@ public class LogReceiver {
         server.createContext("/log", new LogHandler());
         server.setExecutor(null);
         server.start();
-        System.out.println("LogReceiver HTTP server started on port " + PORT);
+        LoggerUtil.logInfo("LogReceiver HTTP server started on port " + PORT);
     }
 
     static class LogHandler implements HttpHandler {

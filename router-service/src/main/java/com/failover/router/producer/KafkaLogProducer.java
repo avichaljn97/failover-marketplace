@@ -1,5 +1,6 @@
 package com.failover.router.producer;
 
+import com.failover.router.util.LoggerUtil;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -26,7 +27,7 @@ public class KafkaLogProducer {
         try {
             producer.send(record, (metadata, exception) -> {
                 if (exception == null) {
-                    System.out.println("✅ Sent message to topic " + metadata.topic() +
+                    LoggerUtil.logInfo("✅ Sent message to topic " + metadata.topic() +
                             " partition " + metadata.partition() +
                             " offset " + metadata.offset());
                 } else {

@@ -1,5 +1,6 @@
 package com.failover.router.config;
 
+import com.failover.router.util.LoggerUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.errors.TopicExistsException;
@@ -33,17 +34,17 @@ public class KafkaTopicManager {
                 CreateTopicsResult result = adminClient.createTopics(Collections.singleton(newTopic));
                 try {
                     result.all().get();
-                    System.out.println("Created topic: " + topic.getName());
+                    LoggerUtil.logInfo("Created topic: " + topic.getName());
                 } catch (ExecutionException e) {
                     if (e.getCause() instanceof TopicExistsException) {
-                        System.out.println("Topic already exists: " + topic.getName());
+                        LoggerUtil.logInfo("Topic already exists: " + topic.getName());
                     } else {
                         throw e; // Rethrow other unexpected errors
                     }
                 }
             }
         } catch (ExecutionException e) {
-            System.out.println("Some error occured init: " + e.getMessage());
+            LoggerUtil.logInfo("Some error occured init: " + e.getMessage());
         }
     }
 }

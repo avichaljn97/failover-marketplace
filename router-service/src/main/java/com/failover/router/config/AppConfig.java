@@ -16,4 +16,7 @@ public class AppConfig {
     public static final String DEFAULT_KAFKA_GROUP = "MODERATE_GROUP";
     public static final String DEFAULT_KAFKA_TOPIC = "DATA_FETCH_LOG_SUCCESS";
     public static final String KAFKA_TOPIC = "resources/kafka-topics.json";
+
+    public static final String SEVERITY_CONFIG = "resources/severity-config.json";
+
 }

@@ -1,23 +1,26 @@
 package com.failover.router.config;
 
+import com.failover.router.util.LoggerUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import static com.failover.router.config.AppConfig.*;
 
 public class SeverityConfig {
 
-    private static final String CONFIG_FILE = KAFKA_TOPIC;
+    private static final String CONFIG_FILE = SEVERITY_CONFIG;
     private static final Map<String, String> severityMap = new HashMap<>();
 
     static {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Map<String, Map<String, String>>> rawConfig =
-                    mapper.readValue(new File(CONFIG_FILE), new TypeReference<>() {});
+                    mapper.readValue(new File(CONFIG_FILE), new TypeReference<>() {
+                    });
 
             for (Map.Entry<String, Map<String, Map<String, String>>> serviceEntry : rawConfig.entrySet()) {
                 String service = serviceEntry.getKey();
@@ -32,8 +35,10 @@ public class SeverityConfig {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Failed to load severity-config.json: " + e.getMessage());
+            LoggerUtil.logError("Failed to load severity-config.json: " + e.getMessage());
+            throw new RuntimeException("Cannot start application without severity-config.json", e);
         }
+
     }
 
     public static String getSeverity(String service, String endpoint, String status) {

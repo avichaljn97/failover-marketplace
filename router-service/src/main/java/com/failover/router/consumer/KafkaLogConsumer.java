@@ -1,5 +1,6 @@
 package com.failover.router.consumer;
 
+import com.failover.router.util.LoggerUtil;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -34,12 +35,12 @@ public class KafkaLogConsumer {
 
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
             consumer.subscribe(Collections.singletonList(TOPIC));
-            System.out.println("Kafka consumer started. Listening on topic: " + TOPIC);
+            // LoggerUtil.logInfo("Kafka consumer started. Listening on topic: " + TOPIC);
 
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
                 for (ConsumerRecord<String, String> record : records) {
-                    System.out.println("Received message: " + record.value());
+                    LoggerUtil.logInfo("Received message: " + record.value());
                     try {
                         // Deserialize the JSON string to AppLog
                         AppLog appLog = objectMapper.readValue(record.value(), AppLog.class);
@@ -49,12 +50,12 @@ public class KafkaLogConsumer {
                         MySQLLogWriter.writeToMySQL(appLog);
 
                     } catch (Exception e) {
-                        System.err.println("❌ Failed to parse or write log: " + e.getMessage());
+                        LoggerUtil.logError("❌ Failed to parse or write log: " + e.getMessage());
                     }
                 }
             }
         } catch (Exception e) {
-            System.err.println("Kafka consumer error: " + e.getMessage());
+            LoggerUtil.logError("Kafka consumer error: " + e.getMessage());
             e.printStackTrace();
         }
     }

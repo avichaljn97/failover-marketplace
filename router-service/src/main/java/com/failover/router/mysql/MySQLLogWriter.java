@@ -1,6 +1,7 @@
 package com.failover.router.mysql;
 
 import com.failover.router.model.AppLog;
+import com.failover.router.util.LoggerUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.Connection;
@@ -35,10 +36,10 @@ public class MySQLLogWriter {
             stmt.setString(9, log.getTimestamp());
 
             stmt.executeUpdate();
-            System.out.println("✅ Log stored in MySQL");
+            LoggerUtil.logInfo("✅ Log stored in MySQL");
 
         } catch (Exception e) {
-            System.err.println("❌ Failed to write log to MySQL: " + e.getMessage());
+            LoggerUtil.logError("❌ Failed to write log to MySQL: " + e.getMessage());
             e.printStackTrace();
         }
     }

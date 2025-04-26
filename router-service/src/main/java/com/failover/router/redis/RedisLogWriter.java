@@ -1,6 +1,7 @@
 package com.failover.router.redis;
 
 import com.failover.router.model.AppLog;
+import com.failover.router.util.LoggerUtil;
 import redis.clients.jedis.Jedis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.failover.router.config.AppConfig.*;
@@ -25,9 +26,9 @@ public class RedisLogWriter {
             // Push log to Redis list
             jedis.rpush(key, logJson);
 
-            System.out.println("✅ Log stored in Redis at key: " + key);
+            LoggerUtil.logInfo("✅ Log stored in Redis at key: " + key);
         } catch (Exception e) {
-            System.err.println("❌ Failed to write log to Redis: " + e.getMessage());
+            LoggerUtil.logError("❌ Failed to write log to Redis: " + e.getMessage());
             e.printStackTrace();
         }
     }
