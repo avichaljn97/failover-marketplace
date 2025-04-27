@@ -34,16 +34,18 @@ public class SeverityConfig {
                     }
                 }
             }
-        } catch (Exception e) {
-            LoggerUtil.logError("Failed to load severity-config.json: " + e.getMessage());
-            throw new RuntimeException("Cannot start application without severity-config.json", e);
+        } catch (Throwable t) {
+            LoggerUtil.logError("Failed to load severity-config.json: " + t.getMessage());
+            throw new IllegalStateException("Cannot start application without severity-config.json", t);
         }
+
 
     }
 
     public static String getSeverity(String service, String endpoint, String status) {
         return severityMap.getOrDefault(buildKey(service, endpoint, status), "MODERATE");
     }
+
 
     private static String buildKey(String service, String endpoint, String status) {
         return service + "|" + endpoint + "|" + status;

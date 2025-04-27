@@ -1,5 +1,6 @@
 package com.failover.router.model;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 
 public class AppLog {
@@ -85,4 +86,13 @@ public class AppLog {
     public void setSeverity(String severity) {
         this.severity = severity;
     }
+    public String stringify() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "{\"error\": \"Failed to serialize AppLog to JSON\"}";
+        }
+    }
+
 }

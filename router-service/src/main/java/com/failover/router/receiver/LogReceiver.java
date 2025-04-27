@@ -32,25 +32,23 @@ public class LogReceiver {
         public void handle(HttpExchange exchange) {
             try {
                 if (!"POST".equals(exchange.getRequestMethod())) {
-                    exchange.sendResponseHeaders(405, -1);
+                    sendJsonResponse(exchange, 405, false, "Only POST method is supported.");
                     return;
                 }
 
                 InputStream requestBody = exchange.getRequestBody();
                 AppLog appLog = objectMapper.readValue(requestBody, AppLog.class);
-
+                LoggerUtil.logInfo("Received AppLog: " + appLog.stringify());
                 // Validate required fields (minimal)
                 if (appLog.getService() == null || appLog.getEndpoint() == null || appLog.getStatus() == null) {
-                    String response = "Missing required fields";
-                    exchange.sendResponseHeaders(400, response.getBytes().length);
-                    OutputStream os = exchange.getResponseBody();
-                    os.write(response.getBytes(StandardCharsets.UTF_8));
-                    os.close();
+                    sendJsonResponse(exchange, 400, false, "Missing required fields in request.");
                     return;
                 }
 
                 // Determine severity based on config
+                LoggerUtil.logInfo("Determining the severity based on config.");
                 String severity = SeverityConfig.getSeverity(appLog.getService(), appLog.getEndpoint(), appLog.getStatus());
+                LoggerUtil.logInfo("Severity found to be "+ severity);
                 appLog.setSeverity(severity);
 
                 // Determine Kafka topic
@@ -60,22 +58,28 @@ public class LogReceiver {
                 KafkaLogDispatcher.sendToKafka(topic, appLog);
 
                 // Return success
-                String response = "Log received and dispatched to Kafka.";
-                exchange.sendResponseHeaders(200, response.getBytes().length);
-                OutputStream os = exchange.getResponseBody();
-                os.write(response.getBytes(StandardCharsets.UTF_8));
-                os.close();
+                sendJsonResponse(exchange, 200, true, "Log received and dispatched to Kafka.");
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Throwable t) {
+                t.printStackTrace();
                 try {
-                    String response = "Internal Server Error";
-                    exchange.sendResponseHeaders(500, response.getBytes().length);
-                    OutputStream os = exchange.getResponseBody();
-                    os.write(response.getBytes(StandardCharsets.UTF_8));
-                    os.close();
+                    sendJsonResponse(exchange, 500, false, "Internal Server Error. Please try again later.");
                 } catch (Exception ignored) {}
             }
+        }
+
+        private void sendJsonResponse(HttpExchange exchange, int statusCode, boolean success, String message) throws Exception {
+            String responseJson = String.format(
+                    "{\"success\": %s, \"message\": \"%s\"}",
+                    success,
+                    message.replace("\"", "'")
+            );
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
+            byte[] responseBytes = responseJson.getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(statusCode, responseBytes.length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(responseBytes);
+            os.close();
         }
     }
 }

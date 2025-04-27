@@ -39,11 +39,11 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: fallback_logs
     ports:
       - "3306:3306"
     volumes:
       - ./docker/mysql:/docker-entrypoint-initdb.d
+
 
   # ---------------------- Prometheus ----------------------
   prometheus:
