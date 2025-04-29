@@ -24,6 +24,10 @@ public class LoggerUtil {
         logger.error(message);
     }
 
+    public static void logError(String message, Throwable throwable) {
+        logger.error(message, throwable);
+    }
+
     /**
      * Log a debug message (for detailed troubleshooting).
      * @param message The message to log

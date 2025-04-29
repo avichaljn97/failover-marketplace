@@ -1,5 +1,6 @@
 package com.failover.router.consumer;
 
+import com.failover.router.manager.LogPersistenceManager;
 import com.failover.router.util.LoggerUtil;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -8,8 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.failover.router.model.AppLog;
-import com.failover.router.redis.RedisLogWriter;
-import com.failover.router.mysql.MySQLLogWriter;
 import static com.failover.router.config.AppConfig.*;
 
 
@@ -41,16 +40,20 @@ public class KafkaLogConsumer {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
                 for (ConsumerRecord<String, String> record : records) {
                     LoggerUtil.logInfo("Received message: " + record.value());
+
                     try {
                         // Deserialize the JSON string to AppLog
                         AppLog appLog = objectMapper.readValue(record.value(), AppLog.class);
 
-                        // Write to Redis using our custom writer
-                        RedisLogWriter.writeToRedis(appLog);
-                        MySQLLogWriter.writeToMySQL(appLog);
+                        // Use LogPersistenceManager to persist with rollback logic
+                        boolean success = LogPersistenceManager.persistLog(appLog);
+
+                        if (!success) {
+                            LoggerUtil.logError("Log persistence failed for key: " + appLog.getUserId());
+                        }
 
                     } catch (Exception e) {
-                        LoggerUtil.logError("❌ Failed to parse or write log: " + e.getMessage());
+                        LoggerUtil.logError("Failed to parse or persist log", e);
                     }
                 }
             }

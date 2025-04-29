@@ -11,7 +11,7 @@ public class RedisLogWriter {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void writeToRedis(AppLog log) {
+    public static boolean writeToRedis(AppLog log) {
         try (Jedis jedis = new Jedis(REDIS_HOST, REDIS_PORT)) {
             // Build Redis key from log components
             String key = String.format("logs:%s:%s:%s:%s",
@@ -27,9 +27,11 @@ public class RedisLogWriter {
             jedis.rpush(key, logJson);
 
             LoggerUtil.logInfo("✅ Log stored in Redis at key: " + key);
+            return true;
         } catch (Exception e) {
             LoggerUtil.logError("❌ Failed to write log to Redis: " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
 }
