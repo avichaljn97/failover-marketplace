@@ -1,11 +1,19 @@
 <configuration>
 
+    <!-- ✅ Add this console appender to see logs in terminal -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ✅ File appender with rolling policy (unchanged) -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/routerService.log</file> <!-- Current active log file -->
+        <file>logs/routerService.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/routerService.%d{yyyy-MM-dd}.log.gz</fileNamePattern> <!-- Rolled file compressed -->
-            <maxHistory>3</maxHistory> <!-- Keep last 3 days logs -->
+            <fileNamePattern>logs/routerService.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>3</maxHistory>
         </rollingPolicy>
 
         <encoder>
@@ -13,15 +21,19 @@
         </encoder>
     </appender>
 
-    <!-- ⬇️ Silence Kafka internal noisy logs -->
+    <!-- ✅ Explicitly enable your app logs -->
+    <logger name="com.failover.router" level="INFO" />
+
+    <!-- ✅ Silence Kafka noise -->
     <logger name="org.apache.kafka" level="ERROR" />
     <logger name="org.apache.kafka.clients" level="ERROR" />
     <logger name="org.apache.kafka.common" level="ERROR" />
     <logger name="org.apache.zookeeper" level="ERROR" />
 
-    <!-- ⬇️ Root logger: your application logs -->
+    <!-- ✅ Add both file + console to root logger -->
     <root level="INFO">
         <appender-ref ref="FILE" />
+        <appender-ref ref="CONSOLE" />
     </root>
 
 </configuration>

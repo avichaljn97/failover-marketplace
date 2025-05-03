@@ -15,13 +15,18 @@ public class AppLog extends BaseSQLModel {
     private Map<String, Object> response;
     private String timestamp;
     private String severity;
+    private String tableName;
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     // Required by BaseSQLModel
     @Override
     public String getTableName() {
-        return "app_logs"; // use your actual table name
+        return "applogs"; // use your actual table name
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     @Override

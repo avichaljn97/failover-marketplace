@@ -22,6 +22,7 @@ public class KafkaLogConsumer {
     private static final String TOPIC = DEFAULT_KAFKA_TOPIC; // change if needed
     private static final String GROUP_ID = DEFAULT_KAFKA_GROUP;
 
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static void main(String[] args) {
@@ -34,7 +35,7 @@ public class KafkaLogConsumer {
 
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
             consumer.subscribe(Collections.singletonList(TOPIC));
-            // LoggerUtil.logInfo("Kafka consumer started. Listening on topic: " + TOPIC);
+//             LoggerUtil.logInfo("Kafka consumer started. Listening on topic: " + TOPIC);
 
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
