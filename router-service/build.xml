@@ -59,5 +59,19 @@
             </classpath>
         </java>
     </target>
+    <target name="run-routing-test" depends="compile">
+<!--        <echo message="Running test with classpath:"/>-->
+<!--        <pathconvert property="classpath.as.string" refid="classpath" />-->
+<!--        <echo message="Classpath is: ${classpath.as.string}" />-->
+
+
+        <java classname="com.failover.router.test.RoutingManagerTest" fork="true">
+            <classpath>
+                <pathelement path="${build.dir}"/>
+                <path refid="classpath"/> <!-- ✅ THIS is critical -->
+            </classpath>
+        </java>
+    </target>
+
 
 </project>

@@ -1,6 +1,6 @@
 package com.failover.router.config;
 
-public class AppConfig {
+public class Constants {
     // MySQL
     public static final String MYSQL_URL = "jdbc:mysql://localhost:3306/logs";
     public static final String MYSQL_USER = "router_app";
@@ -21,4 +21,21 @@ public class AppConfig {
 //    public static final String SEVERITY_CONFIG = "resources/severity-config.json";
     public static final String SEVERITY_CONFIG = "/home/avichal.jain/failover-marketplace/router-service/resources/severity-config.json";
 
-}
+    public static final String FETCH_PREFIX = "DATA_FETCH_LOG_";
+    public static final String UPSERT_PREFIX = "DATA_UPSERT_LOG_";
+
+    public static final String STATUS_SUCCESS = "SUCCESS";
+    public static final String STATUS_ERROR = "ERROR";
+
+    public static final int REDIS_EXPIRY_SECONDS = 3 * 24 * 3600;
+    public static final int KAFKA_EXPIRY_HOURS = 24;
+
+    public static final String FETCH_OPERATION = "fetch";
+
+    public static final String SEVERITY_LOW = "LOW";
+    public static final String SEVERITY_MODERATE = "MODERATE";
+    public static final String SEVERITY_HIGH = "HIGH";
+    public static final String SEVERITY_CRITICAL = "CRITICAL";
+
+    public static final String DEFAULT_SUCCESS_SEVERITY = SEVERITY_LOW;
+    public static final String DEFAULT_FAILURE_SEVERITY = SEVERITY_MODERATE;}

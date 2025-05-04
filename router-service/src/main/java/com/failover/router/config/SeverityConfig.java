@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.failover.router.config.AppConfig.*;
+import static com.failover.router.config.Constants.*;
 
 public class SeverityConfig {
 
@@ -43,8 +43,11 @@ public class SeverityConfig {
     }
 
     public static String getSeverity(String service, String endpoint, String status) {
-        return severityMap.getOrDefault(buildKey(service, endpoint, status), "MODERATE");
+        if (service == null || endpoint == null || status == null) return null;
+        String key = buildKey(service, endpoint, status);
+        return severityMap.get(key); // no default
     }
+
 
 
     private static String buildKey(String service, String endpoint, String status) {

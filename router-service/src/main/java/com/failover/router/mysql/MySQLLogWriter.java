@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import static com.failover.router.config.AppConfig.*;
+import static com.failover.router.config.Constants.*;
 
 public class MySQLLogWriter {
 

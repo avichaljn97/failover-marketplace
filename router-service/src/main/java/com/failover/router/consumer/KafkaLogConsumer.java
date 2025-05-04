@@ -9,7 +9,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.failover.router.model.AppLog;
-import static com.failover.router.config.AppConfig.*;
+import static com.failover.router.config.Constants.*;
 
 
 import java.time.Duration;

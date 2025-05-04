@@ -1,5 +1,6 @@
 package com.failover.router.receiver;
 
+import com.failover.router.manager.RoutingManager;
 import com.failover.router.model.AppLog;
 import com.failover.router.producer.KafkaLogDispatcher;
 import com.failover.router.config.SeverityConfig;
@@ -46,10 +47,8 @@ public class LogReceiver {
                 }
 
                 // Determine severity based on config
-                LoggerUtil.logInfo("Determining the severity based on config.");
-                String severity = SeverityConfig.getSeverity(appLog.getService(), appLog.getEndpoint(), appLog.getStatus());
-                LoggerUtil.logInfo("Severity found to be "+ severity);
-                appLog.setSeverity(severity);
+                String resolvedSeverity = RoutingManager.resolveSeverity(appLog);
+                appLog.setSeverity(resolvedSeverity);
 
                 // Determine Kafka topic
                 String topic = KafkaLogDispatcher.determineTopic(appLog);

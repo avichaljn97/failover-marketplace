@@ -1,5 +1,6 @@
 package com.failover.router.producer;
 
+import com.failover.router.manager.RoutingManager;
 import com.failover.router.model.AppLog;
 import com.failover.router.util.LoggerUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,8 +9,9 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
-import static com.failover.router.config.AppConfig.*;
+import static com.failover.router.config.Constants.*;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Future;
 
@@ -28,18 +30,15 @@ public class KafkaLogDispatcher {
     }
 
     public static String determineTopic(AppLog log) {
-        String base = log.getMethod().equalsIgnoreCase("GET") || log.getMethod().equalsIgnoreCase("POST")
-                ? "DATA_FETCH_LOG_"
-                : "DATA_UPSERT_LOG_";
-
-        return base + log.getStatus().toUpperCase();
+        return RoutingManager.resolveTopic(log);
     }
+
 
     public static void sendToKafka(String topic, AppLog log) throws Exception {
         String logJson = objectMapper.writeValueAsString(log);
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, log.getUserId(), logJson);
         Future<RecordMetadata> future = producer.send(record);
         future.get(); // block until acknowledged
-        LoggerUtil.logInfo("✅ Sent log to topic: " + topic);
+        LoggerUtil.logInfo("Sent log to topic: " + topic);
     }
 }

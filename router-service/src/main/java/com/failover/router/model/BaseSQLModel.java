@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.failover.router.util.LoggerUtil;
 
-import static com.failover.router.config.AppConfig.*;
+import static com.failover.router.config.Constants.*;
 
 public abstract class BaseSQLModel {
 

@@ -8,7 +8,7 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import static com.failover.router.config.AppConfig.*;
+import static com.failover.router.config.Constants.*;
 
 
 public class KafkaTopicManager {

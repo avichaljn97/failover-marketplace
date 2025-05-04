@@ -2,10 +2,9 @@ package com.failover.router.redis;
 
 import com.failover.router.model.AppLog;
 import com.failover.router.util.LoggerUtil;
-import redis.clients.jedis.Jedis;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static com.failover.router.config.AppConfig.*;
-
+import redis.clients.jedis.Jedis;
+import static com.failover.router.config.Constants.*;
 
 public class RedisLogWriter {
 
@@ -13,24 +12,24 @@ public class RedisLogWriter {
 
     public static boolean writeToRedis(AppLog log) {
         try (Jedis jedis = new Jedis(REDIS_HOST, REDIS_PORT)) {
-            // Build Redis key from log components
-            String key = String.format("logs:%s:%s:%s:%s",
+            long timestamp = System.currentTimeMillis();
+
+            String key = String.format("logs|%s|%s|%s|%s|%d",
                     log.getUserId(),
                     log.getService(),
                     log.getEndpoint(),
-                    log.getSeverity());
+                    log.getSeverity(),
+                    timestamp);
 
-            // Serialize the log object as a JSON string
             String logJson = objectMapper.writeValueAsString(log);
 
-            // Push log to Redis list
-            jedis.rpush(key, logJson);
+            // ✅ Store with 3-day TTL
+            jedis.setex(key, REDIS_EXPIRY_SECONDS, logJson);
 
-            LoggerUtil.logInfo("✅ Log stored in Redis at key: " + key);
+            LoggerUtil.logInfo("✅ Log stored in Redis with key: " + key);
             return true;
         } catch (Exception e) {
-            LoggerUtil.logError("❌ Failed to write log to Redis: " + e.getMessage());
-            e.printStackTrace();
+            LoggerUtil.logError("❌ Failed to write log to Redis: " + e.getMessage(), e);
             return false;
         }
     }
