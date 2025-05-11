@@ -1,5 +1,3 @@
-USE logs;
-
 DELIMITER //
 
 CREATE TRIGGER applogs_before_insert
@@ -8,7 +6,7 @@ FOR EACH ROW
 BEGIN
   SET NEW.created_at = CURRENT_TIMESTAMP;
   SET NEW.updated_at = CURRENT_TIMESTAMP;
-  SET NEW.last_updated_by = CURRENT_USER();
+  SET NEW.last_updated_by = USER();
 END;
 //
 
@@ -17,7 +15,7 @@ BEFORE UPDATE ON applogs
 FOR EACH ROW
 BEGIN
   SET NEW.updated_at = CURRENT_TIMESTAMP;
-  SET NEW.last_updated_by = CURRENT_USER();
+  SET NEW.last_updated_by = USER();
 END;
 //
 

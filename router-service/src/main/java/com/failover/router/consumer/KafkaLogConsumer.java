@@ -13,6 +13,7 @@ import static com.failover.router.config.Constants.*;
 
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -34,8 +35,13 @@ public class KafkaLogConsumer {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
-            consumer.subscribe(Collections.singletonList(TOPIC));
-//             LoggerUtil.logInfo("Kafka consumer started. Listening on topic: " + TOPIC);
+            consumer.subscribe(Arrays.asList(
+                    "DATA_FETCH_LOG_SUCCESS",
+                    "DATA_FETCH_LOG_ERROR",
+                    "DATA_UPSERT_LOG_SUCCESS",
+                    "DATA_UPSERT_LOG_ERROR"
+            ));
+             LoggerUtil.logInfo("Kafka consumer started. Listening on topic: " + TOPIC);
 
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));

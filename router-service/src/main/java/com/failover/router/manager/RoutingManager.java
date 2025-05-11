@@ -10,24 +10,36 @@ import java.util.Map;
 public class RoutingManager {
 
     public static String resolveTopic(AppLog log) {
-        String status = log.getStatus().toUpperCase(); // "SUCCESS" or "ERROR"
-        String method = log.getMethod().toUpperCase();
-        Map<String, Object> payload = log.getPayload();
+        try {
+            String status = log.getStatus() != null ? log.getStatus().toUpperCase() : "UNKNOWN";
+            String method = log.getMethod() != null ? log.getMethod().toUpperCase() : "UNKNOWN";
+            Map<String, Object> payload = log.getPayload();
 
-        boolean isFetch = false;
+            boolean isFetch = false;
 
-        if (method.equals("GET")) {
-            isFetch = true;
-        } else if (method.equals("POST")) {
-            Object operation = payload.get("operation");
-            if (operation != null && Constants.FETCH_OPERATION.equalsIgnoreCase(operation.toString())) {
+            if ("GET".equals(method)) {
                 isFetch = true;
+            } else if ("POST".equals(method)) {
+                if (payload != null) {
+                    Object operation = payload.get("operation");
+                    if (operation != null && Constants.FETCH_OPERATION.equalsIgnoreCase(operation.toString())) {
+                        isFetch = true;
+                    }
+                } else {
+                    LoggerUtil.logInfo("No payload in POST request; defaulting to UPSERT");
+                }
             }
-        }
 
-        String prefix = isFetch ? Constants.FETCH_PREFIX : Constants.UPSERT_PREFIX;
-        return prefix + status;
+            String prefix = isFetch ? Constants.FETCH_PREFIX : Constants.UPSERT_PREFIX;
+            return prefix + status;
+
+        } catch (Exception e) {
+            LoggerUtil.logError("Exception while resolving Kafka topic", e);
+            throw e; // rethrow so caller can handle it properly
+        }
     }
+
+
 
     public static String normalizeStatus(String status) {
         if (status == null) return "error";
